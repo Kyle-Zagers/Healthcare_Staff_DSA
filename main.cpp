@@ -16,37 +16,40 @@ void menu(){
 
 
 int main() {
-    bool run = true;
-    while (run) {
-        int x;
-        menu();
-        std::cin >> x;
-        switch (x) {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                run = false;
-                break;
-            default:
-                std::cout << "Invalid Input, please input valid menu selection" << std::endl;
-        }
-    }
-
-    // std::vector<Position> in;
-    // for (int i=0; i<100; i++)
-    // {
-    //     in.push_back(Position("help"+std::to_string(i), rand()));
+    // bool run = true;
+    // while (run) {
+    //     int x;
+    //     menu();
+    //     std::cin >> x;
+    //     switch (x) {
+    //         case 1:
+    //             break;
+    //         case 2:
+    //             break;
+    //         case 3:
+    //             break;
+    //         case 4:
+    //             break;
+    //         case 5:
+    //             break;
+    //         case 6:
+    //             run = false;
+    //             break;
+    //         default:
+    //             std::cout << "Invalid Input, please input valid menu selection" << std::endl;
+    //     }
     // }
-    // Heap res(in, 100);
-    // res.print();
+
+    std::vector<Position> in;
+    for (int i=0; i<10; i++)
+    {
+        in.push_back(Position("help"+std::to_string(i), rand()));
+    }
+    Heap res(in, 10);
+    res.print();
+    std::cout << std::endl;
+    res.insert(Position("kyle", 20000));
+    res.print();
 
     return 0;
 }
