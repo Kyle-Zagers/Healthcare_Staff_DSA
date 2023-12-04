@@ -17,6 +17,7 @@ void menu(){
 
 int main() {
     // bool run = true;
+    // Heap pos;
     // while (run) {
     //     int x;
     //     menu();
@@ -25,6 +26,7 @@ int main() {
     //         case 1:
     //             break;
     //         case 2:
+    //             pos.print();
     //             break;
     //         case 3:
     //             break;
