@@ -6,6 +6,7 @@
 #include "Position.h"
 #include "Heap.h"
 #include "Nurse.h"
+#include "Quicksort.h"
 using std::vector;
 using std::cout;
 using std::endl;
@@ -14,14 +15,15 @@ using std::string;
 
 void menu(){
     std::cout << "Main Menu:" << std:: endl;
-    std::cout << "1. input available nurses" << std::endl;
+    std::cout << "1. Input available nurses" << std::endl;
     std::cout << "2. Show list of available positions" << std::endl;
-    std::cout << "3. Show priority of position" << std::endl;
-    std::cout << "4. Show list of nursing assignments" << std::endl;
-    std::cout << "5. Reset list of available nurses" << std::endl;
+    std::cout << "3. Show list of nursing assignments using quicksort" << std::endl;
+    std::cout << "4. Show list of nursing assignments using heapsort" << std::endl;
+    std::cout << "5. Reset list of available nurses and positions" << std::endl;
     std::cout << "6. Stop Execution" << std::endl;
     std::cout << "7. Input number of random positions" << std::endl;
     std::cout << "8. Input number of random nurses" << std::endl;
+    std::cout << "9. Input a single job position" << std::endl;
 
 }
 
@@ -29,7 +31,7 @@ vector<string> nurseInput() {
     vector<string> nurses;
     string name, names;
 
-        cout << "Please enter nurses' names: \n";
+        cout << "Please enter nurses' first names and last intial with a period, seperated by a comma: \n";
         nurses.push_back("");
         std::cin >> nurses[0];
         std::getline(std::cin, names);
@@ -44,6 +46,7 @@ vector<string> nurseInput() {
             nurses[i] = name.substr(1);
             nurses.push_back("");
         }
+        nurses.pop_back();
         return nurses;
 }
 
@@ -59,11 +62,11 @@ vector<Position> randomPositions(int num) {
 
 
 int main() {
-    Heap heap;
+    Heap heap = Heap();
     vector<string> nurses;
     vector<Position> positions;
-    int numPos;
-    int numNur;
+    int numPos = 0;
+    int numNur = 0;
 
     bool run = true;
     while (run) {
@@ -72,29 +75,27 @@ int main() {
         std::cin >> x;
         if (x == 1) {
             nurses = nurseInput();
+            numNur = nurses.size();
         }
         else if (x==2)
         {
-            for (Position i : positions)
-            {
-                cout << i.getName() << "-" << std::to_string(i.getPriority()) << endl;
-            }
+            printData(positions, positions.size());
         }
         else if (x==3)
         {
-            heap = Heap(positions, numPos);
-            heap.print();
-        }
-        else if (x==4)
-        {
-            for (int i=0; i<nurses.size() && i<positions.size(); i++) {
-                cout << nurses[i] << " = " << heap.extract().getName() << endl;
+            if (numNur==0 || numPos==0)
+            {
+                continue;
             }
-            if (nurses.size() < positions.size())
+            quickSort(positions, 0, positions.size()-1);
+            for (int i=0; i<nurses.size() && i<positions.size(); i++) {
+                cout << nurses[i] << " = " << positions[i].getName() << " - " << std::to_string(positions[i].getPriority()) << endl;
+            }
+            if (numNur < numPos)
             {
                 cout << "Understaffed with highest priority positions filled." << endl;
             }
-            else if (nurses.size() > positions.size())
+            else if (numNur > numPos)
             {
                 cout << "Overstaffed." << endl;
             }
@@ -103,6 +104,39 @@ int main() {
                 cout << "Perfectly staffed with all positions filled." << endl;
             }
         }
+        else if (x==4)
+        {
+            Heap temp = heap;
+            if (numNur==0 || numPos==0)
+            {
+                continue;
+            }
+            for (int i=0; i<nurses.size() && i<positions.size(); i++) {
+                Position temp = heap.extract();
+                cout << nurses[i] << " = " << temp.getName() << " - " << std::to_string(temp.getPriority()) << endl;
+            }
+            if (numNur < numPos)
+            {
+                cout << "Understaffed with highest priority positions filled." << endl;
+            }
+            else if (numNur > numPos)
+            {
+                cout << "Overstaffed." << endl;
+            }
+            else
+            {
+                cout << "Perfectly staffed with all positions filled." << endl;
+            }
+            heap = temp;
+        }
+        else if (x == 5)
+        {
+            positions = {};
+            nurses = {};
+            heap = Heap();
+            numPos = 0;
+            numNur = 0;
+        }
         else if (x == 6) {
             run = false;
         }
@@ -110,12 +144,26 @@ int main() {
         {
             std::cin >> numPos;
             positions = randomPositions(numPos);
+            heap = Heap(positions, numPos);
+            
         }
         else if (x == 8)
         {
             Nurse nurse;
             std::cin >> numNur;
             nurses = nurse.getNames(numNur);
+        }
+        else if (x==9)
+        {
+            cout << "Input position and its priority seperated with a space." << endl;
+            string pos;
+            int pri;
+            std::cin >> pos;
+            std::cin >> pri;
+            Position temp(pos, pri);
+            positions.push_back(temp);
+            heap.insert(temp);
+            numPos++;
         }
         else
         {
