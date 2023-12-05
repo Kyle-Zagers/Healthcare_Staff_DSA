@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <bits/stdc++.h>
+#include <chrono>
 #include "Position.h"
 #include "Heap.h"
 #include "Nurse.h"
@@ -11,6 +12,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 using std::string;
+using namespace std::chrono;
 
 
 void menu(){
@@ -67,6 +69,8 @@ int main() {
     vector<Position> positions;
     int numPos = 0;
     int numNur = 0;
+    int heapsort;
+    int quicksort;
 
     bool run = true;
     while (run) {
@@ -87,7 +91,14 @@ int main() {
             {
                 continue;
             }
+
+            auto start = high_resolution_clock::now();
             quickSort(positions, 0, positions.size()-1);
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+            quicksort += duration.count();
+
+
             for (int i=0; i<nurses.size() && i<positions.size(); i++) {
                 cout << nurses[i] << " = " << positions[i].getName() << " - " << std::to_string(positions[i].getPriority()) << endl;
             }
@@ -103,6 +114,7 @@ int main() {
             {
                 cout << "Perfectly staffed with all positions filled." << endl;
             }
+            cout << "Total quicksort time: " << std::to_string(quicksort)  << " Microseconds" << endl;
         }
         else if (x==4)
         {
@@ -128,6 +140,7 @@ int main() {
                 cout << "Perfectly staffed with all positions filled." << endl;
             }
             heap = temp;
+            cout << "Total heapsort time: " << std::to_string(heapsort) << " Microseconds" << endl;
         }
         else if (x == 5)
         {
@@ -136,15 +149,25 @@ int main() {
             heap = Heap();
             numPos = 0;
             numNur = 0;
+            heapsort = 0;
+            quicksort = 0;
         }
         else if (x == 6) {
             run = false;
         }
         else if (x == 7)
         {
+            heapsort = 0;
+            quicksort = 0;
+
             std::cin >> numPos;
             positions = randomPositions(numPos);
+
+            auto start = high_resolution_clock::now();
             heap = Heap(positions, numPos);
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+            heapsort += duration.count();
             
         }
         else if (x == 8)
@@ -162,7 +185,13 @@ int main() {
             std::cin >> pri;
             Position temp(pos, pri);
             positions.push_back(temp);
+
+            auto start = high_resolution_clock::now();
             heap.insert(temp);
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+            heapsort += duration.count();
+
             numPos++;
         }
         else
